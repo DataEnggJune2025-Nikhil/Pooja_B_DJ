@@ -212,3 +212,4 @@ zipper
 zodiac
 zombie
 watermelon
+cantaloupe
