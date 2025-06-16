@@ -20,12 +20,13 @@ This is a console-based interactive game with single-player and multiplayer mode
 ## 📁 File Structure
 
 ```
-project/
+Python_Project/Hangman_project
 │
 ├── hangman_game.py         # Main game script
 ├── hangman_Art.py          # Contains HANGMAN_PICS list (ASCII graphics)
 ├── words.txt               # Word bank file used in the game
 ├── README.md               # Project overview and usage guide
+├── Screenshots             # Contains screenshots of the game
 ```
 
 ---
