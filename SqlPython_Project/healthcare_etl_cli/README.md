@@ -30,7 +30,7 @@ healthcare_etl_cli/
 ├── pgsql_handler.py       # DB operations
 ├── config.ini             # DB/API config
 ├── requirements.txt       # Dependencies
-├── health.csv             # Sample exported data file
+├── health.csv             # exported data file
 ├── sql/
 │   └── create_tables.sql  # DB schema DDL
 ├── screenshots/           # CLI output screenshots
@@ -90,7 +90,7 @@ python main.py drop-tables
 ### Export
 
 ```bash
-python main.py export-full-dataset --export-csv health.csv
+python main.py export-full-dataset --export-csv output.csv
 ```
 
 ---
@@ -139,6 +139,10 @@ CREATE TABLE IF NOT EXISTS gho_data (
 ## Author
 
 Pooja Bavisetti 
+
+## Data Source
+
+Data used in this project was obtained from the WHO Global Health Observatory API: [https://www.who.int/data/gho](https://www.who.int/data/gho)
 
 ## License
 
