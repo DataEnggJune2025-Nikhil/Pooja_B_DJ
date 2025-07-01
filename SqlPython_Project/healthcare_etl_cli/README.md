@@ -2,33 +2,73 @@
 
 ## Overview
 
-This project is a command-line application that extracts healthcare data from a public API or CSV, transforms it into a clean and structured format, loads it into a PostgreSQL database, and allows users to perform analytical queries directly from the CLI. It demonstrates critical data engineering skills, including data ingestion, cleaning, storage, and reporting.
+This project is a command-line tool that extracts healthcare data from a public API or CSV, transforms it into a clean format, loads it into PostgreSQL, and allows analytical queries via CLI. It demonstrates data engineering skills such as data ingestion, cleaning, storage, and reporting.
 
 ---
 
 ## Features
 
-* Connects to a public healthcare API (e.g., WHO or similar) or reads from CSV files.
-* Extracts data with user-defined parameters (country, indicator).
-* Cleans and transforms data: handles missing values, standardizes formats, removes duplicates, applies business logic.
-* Loads data into PostgreSQL using efficient batch inserts with incremental load support.
-* Auto-generates `id` (SERIAL PRIMARY KEY) and sets `etl_timestamp` during data load.
-* Provides a CLI with commands for data fetching, queries, exports, and database management.
-* Supports extended query types for richer analysis.
-* Displays results in clean tabular format using `tabulate`.
-* Implements robust error handling and logging.
+* Connects to public API (e.g. WHO) or CSV source.
+* Extracts data based on country and indicator.
+* Cleans data (handles missing values, converts types, standardizes names, removes duplicates).
+* Loads data into PostgreSQL using batch inserts with incremental load logic.
+* Automatically generates `id` and `etl_timestamp` on insert.
+* Provides CLI commands for ETL, queries, export, and DB management.
+* Supports extended analytical queries.
+* Displays results in tables using `tabulate`.
+* Includes robust error handling and logging.
 
 ---
 
-## CLI Usage Examples
+## File Structure
 
-### Fetch and load data
+```
+healthcare_etl_cli/
+├── main.py                # CLI entry point
+├── api_client.py          # API handler
+├── data_transformer.py    # Data cleaning logic
+├── pgsql_handler.py       # DB operations
+├── config.ini             # DB/API config
+├── requirements.txt       # Dependencies
+├── health.csv             # Sample exported data file
+├── sql/
+│   └── create_tables.sql  # DB schema DDL
+├── screenshots/           # CLI output screenshots
+│   ├── Screenshot 2025-07-01 110629.png
+│   ├── Screenshot 2025-07-01 110809.png
+│   ├── Screenshot 2025-07-01 113506.png
+│   ├── Screenshot 2025-07-01 113647.png
+│   └── Screenshot 2025-07-01 113753.png
+└── README.md              # Project documentation
+```
+
+---
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+Set up your PostgreSQL DB using:
+
+```bash
+psql -d <dbname> -f sql/create_tables.sql
+```
+
+Update `config.ini` with DB credentials and API keys.
+
+---
+
+## CLI Usage
+
+### Fetch data
 
 ```bash
 python main.py fetch-data --indicator WHOSIS_000001 --country IND
 ```
 
-### Run queries (available query types)
+### Queries
 
 ```bash
 python main.py query-data total_cases India
@@ -40,17 +80,17 @@ python main.py query-data latest_value_by_country WHOSIS_000001
 python main.py query-data country_rank_by_indicator WHOSIS_000001
 ```
 
-### Manage database
+### Manage DB
 
 ```bash
 python main.py list-tables
 python main.py drop-tables
 ```
 
-### Export dataset
+### Export
 
 ```bash
-python main.py export-full-dataset --export-csv output.csv
+python main.py export-full-dataset --export-csv health.csv
 ```
 
 ---
@@ -59,13 +99,13 @@ python main.py export-full-dataset --export-csv output.csv
 
 ```sql
 CREATE TABLE IF NOT EXISTS gho_data (
-    id SERIAL PRIMARY KEY,
-    report_date DATE NOT NULL,
-    country_name VARCHAR(50) NOT NULL,
-    indicator_code VARCHAR(50) NOT NULL,
-    value NUMERIC,
-    etl_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (country_name, indicator_code, report_date)
+  id SERIAL PRIMARY KEY,
+  report_date DATE NOT NULL,
+  country_name VARCHAR(50) NOT NULL,
+  indicator_code VARCHAR(50) NOT NULL,
+  value NUMERIC,
+  etl_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (country_name, indicator_code, report_date)
 );
 ```
 
@@ -73,34 +113,32 @@ CREATE TABLE IF NOT EXISTS gho_data (
 
 ## ETL Process
 
-* **Extract:** Connect to API or read CSV, fetch data.
-* **Transform:** Clean data using Pandas, standardize names, convert types, remove duplicates, apply business logic.
-* **Load:** Insert into PostgreSQL using batch inserts, skip/update existing records (incremental load).
+* **Extract:** API/CSV fetch.
+* **Transform:** Clean, standardize, deduplicate.
+* **Load:** Batch insert, incremental load.
 
 ---
 
-## Extended Query Types
+## Extended Queries
 
-* **avg\_metric\_by\_country** — Returns the average metric value per country for a given indicator.
-* **latest\_value\_by\_country** — Returns the latest available value per country for a given indicator.
-* **country\_rank\_by\_indicator** — Ranks countries by total metric value for a given indicator.
+* `avg_metric_by_country`: Average value per country for indicator.
+* `latest_value_by_country`: Latest value per country for indicator.
+* `country_rank_by_indicator`: Rank countries by total metric value.
 
 ---
 
-## Future Improvements
+## Future Enhancements
 
-* Add support for multiple APIs.
-* Integrate CLI visualizations (e.g., asciichartpy).
-* Generate HTML/CSV reports from queries.
-* Explore orchestration with Airflow/Prefect.
+* Multi-API support.
+* CLI visualizations.
+* HTML/CSV report generation.
+* Airflow/Prefect orchestration.
 
 ---
 
 ## Author
 
-Pooja Bavisetti
-
----
+Pooja Bavisetti 
 
 ## License
 
